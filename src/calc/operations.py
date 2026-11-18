@@ -34,3 +34,14 @@ def power(base: float, exponent: int) -> float:
     for _ in range(abs(exponent)):
         result *= base
     return result if exponent >= 0 else 1 / result
+
+
+def is_palindrome(s: str) -> bool:
+    """Проверяет, является ли строка палиндромом без учёта регистра и пробелов.
+
+    Вызывает TypeError, если передана не строка.
+    """
+    if not isinstance(s, str):
+        raise TypeError("Аргумент должен быть строкой")
+    normalized = "".join(s.split()).casefold()
+    return normalized == normalized[::-1]

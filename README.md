@@ -1,7 +1,10 @@
 # calc-ci-lab — учебный проект для ЛПР 12
 
+[![GitHub Actions](https://github.com/mak1yaki/calc-ci-lab/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/mak1yaki/calc-ci-lab/actions/workflows/ci.yml)
+[![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/yarikbig/calc-ci-lab/main?label=Bitbucket%20Pipelines&logo=bitbucket)](https://bitbucket.org/yarikbig/calc-ci-lab/pipelines)
+
 Небольшой калькулятор на Python, на примере которого настраивается непрерывная
-интеграция (CI) в **GitHub Actions** и **GitLab CI/CD**.
+интеграция (CI) в **GitHub Actions**, **GitLab CI/CD** и **Bitbucket Pipelines**.
 
 ## Структура
 
@@ -9,6 +12,7 @@
 .
 ├── .github/workflows/ci.yml   # workflow GitHub Actions
 ├── .gitlab-ci.yml             # pipeline GitLab CI/CD
+├── bitbucket-pipelines.yml    # pipeline Bitbucket Pipelines
 ├── pyproject.toml             # метаданные пакета и настройки pytest
 ├── requirements-dev.txt       # инструменты разработки (pytest, flake8, build)
 ├── .flake8                    # настройки линтера

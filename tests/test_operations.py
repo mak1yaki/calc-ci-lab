@@ -2,7 +2,7 @@
 
 import pytest
 
-from calc import add, divide, multiply, power, subtract
+from calc import add, divide, is_palindrome, multiply, power, subtract
 from calc.cli import main
 
 
@@ -52,3 +52,24 @@ def test_cli_add(capsys):
 def test_cli_division_by_zero_returns_error_code(capsys):
     assert main(["div", "1", "0"]) == 1
     assert "Ошибка" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize(
+    "text, expected",
+    [
+        ("шалаш", True),
+        ("А роза упала на лапу Азора", True),
+        ("Never Odd Or Even", True),
+        ("", True),
+        ("python", False),
+        ("ab", False),
+    ],
+)
+def test_is_palindrome(text, expected):
+    assert is_palindrome(text) is expected
+
+
+@pytest.mark.parametrize("bad_value", [12321, None, ["a", "b", "a"]])
+def test_is_palindrome_rejects_non_string(bad_value):
+    with pytest.raises(TypeError, match="строкой"):
+        is_palindrome(bad_value)
