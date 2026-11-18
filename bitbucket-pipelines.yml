@@ -1,0 +1,46 @@
+# Pipeline Bitbucket Pipelines для ЛПР 12.
+# Файл обязан лежать в корне репозитория и называться bitbucket-pipelines.yml.
+# Шаги (step) выполняются по порядку: если шаг провалился,
+# следующие шаги не запускаются.
+
+# Docker-образ, в котором выполняются все шаги.
+image: python:3.12-slim
+
+pipelines:
+  # default: pipeline запускается при каждом push в любую ветку.
+  default:
+    # ---------- Этап 1. Статическая проверка кода ----------
+    - step:
+        name: Проверка кода (flake8)
+        caches:
+          - pip
+        script:
+          - python --version
+          - pip install --quiet -r requirements-dev.txt
+          - flake8 src tests
+
+    # ---------- Этап 2. Автоматические тесты ----------
+    - step:
+        name: Тесты (pytest)
+        caches:
+          - pip
+        script:
+          - pip install --quiet -r requirements-dev.txt
+          # Bitbucket сам находит JUnit-отчёты в каталоге test-results
+          # и показывает их на вкладке Tests.
+          - pytest -v --junitxml=test-results/report.xml
+        artifacts:
+          - test-results/**
+
+    # ---------- Этап 3. Сборка пакета ----------
+    - step:
+        name: Сборка пакета
+        caches:
+          - pip
+        script:
+          - pip install --quiet -r requirements-dev.txt
+          - python -m build
+          - pip install dist/*.whl
+          - calc add 2 3
+        artifacts:
+          - dist/**
