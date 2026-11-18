@@ -1,0 +1,51 @@
+# Pipeline GitLab CI/CD для ЛПР 12.
+# Файл обязан лежать в корне репозитория и называться .gitlab-ci.yml.
+# Порядок этапов (stages): следующий этап начинается
+# только после успеха предыдущего.
+stages:
+  - lint
+  - test
+  - build
+
+# Настройки по умолчанию для всех заданий.
+default:
+  image: python:3.12-slim
+  before_script:
+    - python --version
+    - pip install --quiet -r requirements-dev.txt
+
+# Когда создавать pipeline: при push, из веб-интерфейса и для merge request.
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+    - if: $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+# ---------- Этап 1. Статическая проверка кода ----------
+lint:
+  stage: lint
+  script:
+    - flake8 src tests
+
+# ---------- Этап 2. Автоматические тесты ----------
+test:
+  stage: test
+  script:
+    - pytest -v --junitxml=report.xml
+  artifacts:
+    when: always                 # отчёт нужен и при провале тестов
+    reports:
+      junit: report.xml          # GitLab покажет результаты на вкладке Tests
+    expire_in: 1 week
+
+# ---------- Этап 3. Сборка пакета ----------
+build:
+  stage: build
+  script:
+    - python -m build
+    - pip install dist/*.whl
+    - calc add 2 3
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 week
